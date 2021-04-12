@@ -50,7 +50,7 @@ public class EditCommandParser implements Parser<EditCommand> {
 
         boolean doIndicesContainWords = checkIndicesInputContainsWords(argMultimap.getPreamble());
 
-        if (doIndicesContainWords) {
+        if (doIndicesContainWords || argMultimap.getPreamble().equals("")) {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, EditCommand.MESSAGE_USAGE));
         }
 
@@ -218,7 +218,7 @@ public class EditCommandParser implements Parser<EditCommand> {
      * If {@code policies} contain only one element which is an empty string, it will be parsed into a
      * {@code List<InsurancePolicy>} containing zero policies.
      */
-    private Optional<List<InsurancePolicy>> parsePoliciesForEdit(Collection<String> policyIds) {
+    private Optional<List<InsurancePolicy>> parsePoliciesForEdit(Collection<String> policyIds) throws ParseException {
         assert policyIds != null;
 
         if (policyIds.isEmpty()) {

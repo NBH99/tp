@@ -26,6 +26,8 @@ public class InsurancePolicy {
      */
     public static final Pattern ANGULAR_BRACKET_REGEX = Pattern.compile("^[^<>]+$");
 
+    public static final String MESSAGE_CONSTRAINTS = "Policy id should not contain the ; character.";
+
     public final String policyId;
     private final String policyUrl;
 
@@ -76,11 +78,13 @@ public class InsurancePolicy {
 
         InsurancePolicy otherPolicy = (InsurancePolicy) other;
 
-        try {
-            return policyId.equals(otherPolicy.policyId) && policyUrl.equals(otherPolicy.policyUrl);
-        } catch (NullPointerException e) {
+        if (otherPolicy.policyUrl == null && policyUrl == null) {
             return policyId.equals(otherPolicy.policyId);
+        } else if (otherPolicy.policyUrl != null && policyUrl != null) {
+            return policyId.equals(otherPolicy.policyId) && policyUrl.equals(otherPolicy.policyUrl);
         }
+
+        return false;
     }
 
     @Override
@@ -107,6 +111,9 @@ public class InsurancePolicy {
      */
     public static boolean isValidPolicyInput(String input) {
         String[] splitByAngularBracket = input.split(">", 2);
+        if (splitByAngularBracket[0].contains(";")) {
+            return false;
+        }
         if (splitByAngularBracket.length == 1) {
             // Return true if length is 1, since no '>' was used, meaning no URL and valid policy ID.
             return true;
